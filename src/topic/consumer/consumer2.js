@@ -22,7 +22,7 @@ async function recieveMessage() {
 
         channel.consume(anonymous_queue.queue, function (msg) {
             if (msg.content) {
-                console.log("[x] Received:", msg.content.toString());
+                console.log("[x] Received Type: ", msg.fields.routingKey);
            } 
         }, {
             noAck: true
