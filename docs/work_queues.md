@@ -1,3 +1,5 @@
+# Work Queues
+
 Work Queue를 활용해서 큐에 들어오는 작업들을 여러 worker들에게 분배하여 처리할 수 있게 할 수 있다.
 
 # 1. Round-robin Dispatching

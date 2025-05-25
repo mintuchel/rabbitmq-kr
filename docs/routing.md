@@ -66,6 +66,6 @@ channel.bindQueue(q.queue, exchange, bindingKey);
 
 Direct Exchange의 특징이 정확히 일치하는 routing key만 매칭시켜준다는 것이다.
 
-즉, **`routing key == binding key`** 여야 Queue로 메시지가 전달됩니다.
+즉, **`routing key == binding key`** 여야 Queue로 메시지가 전달된다.
 
 와일드카드 패턴을 routingKey로 사용하고 싶으면 topic 타입의 exchange여야한다.

@@ -20,13 +20,10 @@ Exchange는 메시지를 Producer들에게 받고 받은 메시지들을 Queue�
 
 이런 판단을 내릴 수 있도록 도와주는 것이 `exchange_type`이다.
 
-producer : 메시지를 전송하는 user application
-
-exchange : producer에게 받은 메시지를 알맞는 queue에게 전달하는 중계기
-
-queue : producer가 전송한 메시지를 저장하는 버퍼
-
-consumer : 메시지를 받는 user application
+- producer : 메시지를 전송하는 user application
+- exchange : producer에게 받은 메시지를 알맞는 queue에게 전달하는 중계기
+- queue : producer가 전송한 메시지를 저장하는 버퍼
+- consumer : 메시지를 받는 user application
 
 ## 1-1) Exchange 선언 함수
 
@@ -48,11 +45,12 @@ exchange_type과 durable 설정을 통해 Exchange에 대한 설정을 정의할
 
 `exchange_type`으로는 아래와 같은 종류가 있다.
 
-| FANOUT  | 들어온 메시지를 바인딩된 모든 큐로 브로드캐스트한다. `routingKey`를 무시한다. |
-| ------- | ----------------------------------------------------------------------------- |
-| DIRECT  | `routingKey` 가 정확히 일치하는 큐에만 전달                                   |
-| TOPIC   | 와일드카드 패턴(\*,#)을 이용한 유연한 라우팅이 가능                           |
-| HEADERS | `routingKey` 대신 헤더 속성을 기반으로 메시지를 라우팅함.                     |
+| exchange_type | 설명                                                                       |
+| ------------- | -------------------------------------------------------------------------- |
+| FANOUT        | 들어온 메시지를 바인딩된 모든 큐로 broadcast한다. `routingKey`를 무시한다. |
+| DIRECT        | `routingKey` 가 정확히 일치하는 큐에만 전달                                |
+| TOPIC         | 와일드카드 패턴(`*`, `#`)을 이용한 유연한 라우팅이 가능                    |
+| HEADERS       | `routingKey` 대신 헤더 속성을 기반으로 메시지를 라우팅함.                  |
 
 ## 1-3) Default Exchange
 
@@ -108,39 +106,39 @@ Exchange는 **중간 분배자**일 뿐이다. 따라서 Queue**가 하나도 �
 
 # 4. RabbitMQ에서의 Producer와 Consumer의 역할
 
-## Producer와 Consumer가 공통적으로 해야할 사항
+## 4-1) Producer와 Consumer가 공통적으로 해야할 사항
 
-자신이 사용할 Exchange는 명시해야한다
+자신이 사용할 Exchange는 명시해야한다.
 
-즉, assertExchange는 두 곳에서 모두 필수적으로 존재해야한다.
+즉, `assertExchange`는 두 곳에서 모두 필수적으로 존재해야한다.
 
-## Producer
+## 4-2) Producer
 
 그저 자신이 사용할 Exchange를 알고 message를 전송하기만 하면 된다.
 
 따라서 Producer는 Queue를 알필요가 없다.
 
-assertExchange와 publish만 해주면 된다.
+`assertExchange`와 `publish`만 해주면 된다.
 
 오직 Exchange에 메시지를 전송하는 것만 신경쓰면 된다.
 
-1. channel.assertExchange(name, type)
-2. channel.publish(exchange, routingKey, message)
+1. `channel.assertExchange(name, type)`
+2. `channel.publish(exchange, routingKey, message)`
 
-## Consumer
+## 4-3) Consumer
 
 특정 Queue에 들어온 메시지를 수신만 하면 된다.
 
 하지만 특정 Exchange를 사용 시, 해당 Exchange와 Queue를 매핑시켜줘야한다.
 
-따라서 특정 조건(routingKey)에 따라 Exchange와 Queue을 연결시켜주는 bindQueue까지 해주는 책임을 가지고 있다.
+따라서 특정 조건(routingKey)에 따라 Exchange와 Queue을 연결시켜주는 `bindQueue`까지 해주는 책임을 가지고 있다.
 
-1. channel.assertExchange(name, type)
-2. channel.assertQueue(queueName)
-3. channel.bindQueue(queueName, exchange, routingKey)
-4. channel.consume(queueName, callback)
+1. `channel.assertExchange(name, type)`
+2. `channel.assertQueue(queueName)`
+3. `channel.bindQueue(queueName, exchange, routingKey)`
+4. `channel.consume(queueName, callback)`
 
-## 따라서 Consumer를 Producer보다 먼저 생성해야한다!
+## 4-4) 따라서 Consumer를 Producer보다 먼저 생성해야한다!
 
 Producer를 먼저 생성하면, Exchange로 들어온 메시지를 받아줄 Queue가 없어 메시지가 유실된다!
 
