@@ -1,22 +1,24 @@
 import amqp from 'amqplib';
 
-const exchangeName = 'topic_logs';
+const exchange = 'topic_logs';
+const bindingKey = '*.orange.*';
 
 async function recieveMessage() {
 
-    const severity = '*.orange.*';
-    console.log("routing key is %s", severity);
+    console.log("current routing key is %s", bindingKey);
 
     try {
         const connection = await amqp.connect('amqp://localhost');
         const channel = await connection.createChannel();
 
-        await channel.assertExchange(exchangeName, 'topic', { durable: false });
+        // 사용할 Exchange 선언
+        await channel.assertExchange(exchange, 'topic', { durable: false });
 
+        // 메시지를 전달받을 익명 Queue 선언
         const anonymous_queue = await channel.assertQueue('', { exclusive: true });
 
-        // topic_logs 로부터 queue를 통해 severity에 해당하는 routing key를 가진 메시지만 받겠다
-        await channel.bindQueue(anonymous_queue.queue, exchangeName, severity);
+        // Exchange로부터 Queue를 통해 현재 bindingKey에 매칭되는 routingkey를 가진 메시지 받기
+        await channel.bindQueue(anonymous_queue.queue, exchange, bindingKey);
 
         console.log("[*] Waiting for messages. To exit press CTRL+C");
 
