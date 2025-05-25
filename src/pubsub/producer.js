@@ -10,15 +10,16 @@ async function sendMessage() {
         const connection = await amqp.connect('amqp://localhost');
         const channel = await connection.createChannel();
 
-        // producer will send messages to exchange named 'logs' whose type is 'fanout'
-        // if server is down exchange goes down too since durable option is false
+        // 메시지 보낼 Exchange 선언
         await channel.assertExchange(exchange, 'fanout', { durable: false});
 
-        // publishing to exchange named 'logs'
-        channel.publish(exchange,'', Buffer.from(message));
+        // Exchange로 메시지 전송
+        // fanout exchange_type이기 때문에 routingKey는 설정안해도 됨
+        channel.publish(exchange, '', Buffer.from(message));
+        
         console.log("[x] Sent: %s", message);
 
-        // connection is closed after 0.5sec
+        // 메세지 보내기 전 종료되는 것을 막기 위해 timeout 설정해줌
         setTimeout(() => {
           connection.close();
         }, 500);

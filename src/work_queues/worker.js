@@ -16,6 +16,7 @@ async function fetchTasks() {
                 console.log("[x] %s task RECIEVED", msg.content.toString());
                 // ack 신호 전송
                 channel.ack(msg);
+                // 타 worker가 task를 받을 수 있도록 timeout 설정
                 setTimeout(function() { }, 1000);
             }
 

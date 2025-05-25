@@ -5,7 +5,7 @@ const bindingKey = '*.orange.*';
 
 async function recieveMessage() {
 
-    console.log("current routing key is %s", bindingKey);
+    console.log("current queue's routing key is %s", bindingKey);
 
     try {
         const connection = await amqp.connect('amqp://localhost');

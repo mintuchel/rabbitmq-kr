@@ -1,8 +1,7 @@
 import amqp from 'amqplib';
 
 const exchange = 'direct_logs';
-// routing key
-const severity = 'error';
+const routingKey = 'error';
 
 async function recieveMessage() {
 
@@ -10,26 +9,26 @@ async function recieveMessage() {
         const connection = await amqp.connect('amqp://localhost');
         const channel = await connection.createChannel();
 
-        // we will get messages from exchange named 'direct_logs' whose type is 'direct'
+        // 사용할 Exchange 설정
+        // exchange_type은 direct 타입
         await channel.assertExchange(exchange, 'direct', { durable: false });
 
-        // creating anonymous_queue which will get messages from exchange
-        // and by exclusive option, the queue will be deleted when channel is down
+        // 메시지 받을 익명큐 선언
         const anonymous_queue = await channel.assertQueue('', { exclusive: true });
 
-        // binding queue and exchange
-        // we will get messages from exchange where routing key is severity by queue
-        await channel.bindQueue(anonymous_queue.queue, exchange, severity);
+        // Exchange로부터 Queue를 통해 현재 bindingKey에 매칭되는 routingkey를 가진 메시지 받기
+        await channel.bindQueue(anonymous_queue.queue, exchange, routingKey);
 
         console.log("[*] Waiting for messages. To exit press CTRL+C");
 
-        // when consumed, callback function is called
+        // 메시지 수신 시 콜백함수 실행
         channel.consume(anonymous_queue.queue, function (msg) {
             if (msg.content) {
                 console.log("[x] Received:", msg.content.toString());
-           } 
+            }
+            channel.ack(msg);
         }, {
-            noAck: true
+            noAck: false
         });
     } catch (error) {
         console.error('Error consuming task:', error);

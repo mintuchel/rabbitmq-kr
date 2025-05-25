@@ -1,16 +1,11 @@
-# node dependencies
 node_modules/
-
-# dotenv 환경변수 파일
 .env
 
 # macOS 파일
 .DS_Store
 
-# logs
 logs/
 *.log
 
-# editor 관련 설정 파일 (선택 사항)
 .vscode/
 .idea/
