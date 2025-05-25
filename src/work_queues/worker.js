@@ -7,21 +7,16 @@ async function fetchTasks() {
         const connection = await amqp.connect('amqp://localhost');
         const channel = await connection.createChannel();
 
-        // if task_queue doesnt exist, it creates new queue
-        // due to durable option, the task_queue lasts even if server goes down
-        await channel.assertQueue(queue, {
-            durable: true
-        });
+        // 사용할 Queue 선언
+        await channel.assertQueue(queue, { durable: true });
 
-        // if consumed, callback function is called
-        channel.consume(queue, function(msg) {
+        // 메시지를 받았다면 콜백함수 실행
+        channel.consume(queue, function (msg) {
             if (msg != null) {
                 console.log("[x] %s task RECIEVED", msg.content.toString());
-                
+                // ack 신호 전송
                 channel.ack(msg);
-                setTimeout(() => {
-                    
-                }, 1000);
+                setTimeout(function() { }, 1000);
             }
 
             setTimeout(function () {

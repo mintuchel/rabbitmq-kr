@@ -6,14 +6,13 @@ async function produceTasks() {
     try {
         const connection = await amqp.connect('amqp://localhost');
         const channel = await connection.createChannel();
-
-        // if task_queue doesnt exist, it creates new queue
-        // due to durable option, the task_queue lasts even if server goes down
+        
+        // 사용할 큐 선언
         await channel.assertQueue(queue, { durable: true });
 
         // sending 10 tasks directly to the queue
         for (let i = 1; i <= 10; i++) {
-            channel.sendToQueue(queue, Buffer.from(i.toString()), { persistent: true });
+            channel.sendToQueue(queue, Buffer.from(i.toString()), { persistent: false });
             console.log("[x] %s Task PRODUCED", i);
         }
 
