@@ -22,7 +22,7 @@ Exchange가 하나 이상의 Queue에 바인딩되어있다가, 더 이상 바�
 `internal: true` 로 설정된 Exchange는 외부에서 직접 publish 할 수 없다.
 
 즉, 특정 Client (Publisher)가 직접 메시지를 publish 하려고 하면 `403 ACCESS_REFUSED` 에러가 발생한다.
-Exchange -> Exchange 경로 (즉, exchange-to-exchange binding)에서만 메시지를 받을 수 있도록 제한하는 옵션이다.
+Exchange → Exchange 경로 (즉, exchange-to-exchange binding)에서만 메시지를 받을 수 있도록 제한하는 옵션이다.
 
 ## 4. alternateExchange
 
